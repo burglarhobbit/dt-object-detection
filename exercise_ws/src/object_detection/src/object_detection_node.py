@@ -177,46 +177,23 @@ class ObjectDetectionNode(DTROS):
 
         self.image_publish.publish(self.bridge.cv2_to_imgmsg(img_boxes, encoding="rgb8"))
         
-        msg = BoolStamped()
-        msg.header = image_msg.header
-        msg.data = self.det2bool(bboxes[0], classes[0]) # [0] because our batch size given to the wrapper is 1
-
-        bboxes = self._resize_boxes(bboxes) # return boxes are for image 224x224, but in the processing 480x640 size boxes are used
-        
-        self.pub_obj_dets.publish(msg)
-
-        return bboxes, classes, scores
+        obj_locs = self.obj_locs(bboxes[0], classes[0]) # [0] because our batch size given to the wrapper is 1
     
-    def det2bool(self, bboxes, classes):
+    def obj_locs(self, bboxes, classes):
         obj_det_list = []
         for i in range(len(bboxes)):
             x1, y1, x2, y2 = bboxes[i]
             label = classes[i]
-            if label==0:
-                low_center = Vector2D((x1 + x2)/2.0/self.img_size[1], y2/self.img_size[0])
-                norm_pt = Point.from_message(low_center)
-                pixel = self.ground_projector.vector2pixel(norm_pt)
-                rect = self.rectifier.rectify_point(pixel)
-                rect_pt = Point.from_message(rect)
-                ground_pt = self.ground_projector.pixel2ground(rect_pt)
-                
-                dist = np.sqrt(ground_pt.x**2 + ground_pt.y**2)
-                print(ground_pt.x, ground_pt.y)
+            low_center = Vector2D((x1 + x2)/2.0/self.img_size[1], y2/self.img_size[0])
+            norm_pt = Point.from_message(low_center)
+            pixel = self.ground_projector.vector2pixel(norm_pt)
+            rect = self.rectifier.rectify_point(pixel)
+            rect_pt = Point.from_message(rect)
+            ground_pt = self.ground_projector.pixel2ground(rect_pt)
+            
+            obj_det_list.append(ground_pt)
 
-                if dist < self.safe_distance:
-                    print(ground_pt.x, ground_pt.y)
-                    rospy.logwarn("Pedestrian ahead, in unsafe distance, stop!")
-                    return True
-
-        return False
-
-    def _resize_boxes(self, bboxes):
-        resize_boxes = []
-        for boxes in bboxes:
-            boxes = boxes*np.array([224.0/self.img_size[1], 224/self.img_size[0], 224/self.img_size[1], 224/self.img_size[0]])
-            resize_boxes.append(boxes)
-        
-        return resize_boxes
+        return obj_det_list
 
     def _draw_boxes(self, image, bboxes, classes):
         img =  PIL_Image.fromarray(image.copy())

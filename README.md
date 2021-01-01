@@ -5,7 +5,28 @@ This is complete object detection package for real-time object detection on duck
 
 This package combine deep learning based object detector along with object tracking using Kalman Filter. 
 
+## Seting-Up the Laptop
 
+Setup your laptop using the documentation available at [duckietown-manual](https://docs.duckietown.org/daffy/opmanual_duckiebot/out/building_duckiebot_c0.html)
+
+## Running the object detector node
+
+### Downloading weights
+
+You can download the weights from 
+
+    dts exercises build
+    dts exercises test -b $robot_name --local
+
+In the package object_detection/config/default.yaml you can specify which architecture to use.
+
+
+### Training Faster-RCNN 
+
+    cd utils
+    python3 train.py -name $exp_name -config config.yaml -mode train
+
+You can use the $config.yaml$ to specify the datset path, weights saving path and other model hyper-parameters. The faster-rcnn code is inspired from the structure of [detectron2](https://github.com/facebookresearch/detectron2)
 
 ## Run inference on the jetson nano
 
