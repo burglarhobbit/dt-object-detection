@@ -1,0 +1,19 @@
+status: error
+msg: "Unexpected exception:\nTraceback (most recent call last):\n  File \"/usr/local/lib/python3.8/site-packages/duckietown_experiment_manager/experiment_manager.py\"\
+  , line 34, in wrap\n    asyncio.run(main(cie, logdir, attempts), debug=True)\n \
+  \ File \"/usr/local/lib/python3.8/asyncio/runners.py\", line 44, in run\n    return\
+  \ loop.run_until_complete(main)\n  File \"/usr/local/lib/python3.8/asyncio/base_events.py\"\
+  , line 616, in run_until_complete\n    return future.result()\n  File \"/usr/local/lib/python3.8/site-packages/duckietown_experiment_manager/code.py\"\
+  , line 190, in main\n    raise InvalidSubmission(msg)\nduckietown_challenges.exceptions.InvalidSubmission:\
+  \ Timeout during connection to ego0: <SignalTimeout in state: 2>\n\nDuring handling\
+  \ of the above exception, another exception occurred:\n\nTraceback (most recent\
+  \ call last):\n  File \"/usr/local/lib/python3.8/site-packages/duckietown_challenges/cie_concrete.py\"\
+  , line 681, in scoring_context\n    yield cie\n  File \"/usr/local/lib/python3.8/site-packages/duckietown_experiment_manager/experiment_manager.py\"\
+  , line 68, in go\n    wrap(cie)\n  File \"/usr/local/lib/python3.8/site-packages/duckietown_experiment_manager/experiment_manager.py\"\
+  , line 41, in wrap\n    cie.set_evaluation_dir(\"episodes\", logdir)\n  File \"\
+  /usr/local/lib/python3.8/site-packages/duckietown_challenges/solution_interface.py\"\
+  , line 232, in set_evaluation_dir\n    for bn in os.listdir(realdir):\nFileNotFoundError:\
+  \ [Errno 2] No such file or directory: '/challenges/challenge-evaluation-output/episodes'\n"
+scores: {}
+stats: {}
+ipfs_hashes: {}

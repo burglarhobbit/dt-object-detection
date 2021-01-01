@@ -1,6 +1,12 @@
 # dt-object-detection
 Duckietown Project: Object Detection
 
+This is complete object detection package for real-time object detection on duckietown stack. 
+
+This package combine deep learning based object detector along with object tracking using Kalman Filter. 
+
+
+
 ## Run inference on the jetson nano
 
     sudo apt-get install linux-headers-generic build-essential dkms
