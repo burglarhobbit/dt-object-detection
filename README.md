@@ -22,8 +22,15 @@ Download and Install Pytorch==1.6.0 from [this prebuilt binary for Jetpack 4.4/4
 
 Verify Pytorch installation using [these commands](https://stackoverflow.com/a/48152675/5276428).
 
-If error comes during import, install relevant pip libraries.
-In case of missing `.so` files, use [apt-file search for missing files](https://stackoverflow.com/questions/63818421/unable-to-import-pytorch-in-jetson-nano-ubuntu)
+If error comes during import, install relevant pip libraries.<br />
+In case of missing `.so` files, use [apt-file search](https://stackoverflow.com/questions/63818421/unable-to-import-pytorch-in-jetson-nano-ubuntu) for installing missing files.
+
+After verifying pytorch installation, install torchvision:
+
+    git clone https://github.com/pytorch/vision.git
+    cd vision
+    git checkout v0.7.0
+    python3 setup.py install
 
 jetson_clocks turn on:
 
@@ -32,3 +39,13 @@ jetson_clocks turn on:
 since `htop` is not available for nano. Use `jtop` after installing this package:
 
     sudo apt-get install jetson-stats 
+
+## YOLOv5s
+
+clone this repo on the jetson nano/raspberry pi
+
+    git clone https://github.com/burglarhobbit/yolov5.git
+
+Download weights
+
+    
