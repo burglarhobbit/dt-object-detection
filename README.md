@@ -5,6 +5,12 @@ This is complete object detection package for real-time object detection on duck
 
 This package combine deep learning based object detector along with object tracking using Kalman Filter. 
 
+# I see you Duckie!
+![Img 1](./samples/1.png?raw=true)
+![Img 2](./samples/2.png?raw=true)
+![Img 3](./samples/3.png?raw=true)
+![Img 4](./samples/4.png?raw=true)
+
 ## Seting-Up the Laptop
 
 Setup your laptop using the documentation available at [duckietown-manual](https://docs.duckietown.org/daffy/opmanual_duckiebot/out/building_duckiebot_c0.html)
@@ -22,6 +28,8 @@ You can download the weights from [drive](https://drive.google.com/drive/folders
     dts exercises test --sim
 
 In the package `object_detection/config/default.yaml` you can specify which architecture to use, and other configuration.
+
+After this you can see the object detection on the topic `~duckie_image`. Also you can see object location in robot frame, which can be used for planning and obstacle avoidance, see topic `~object_projection`.
 
 
 ### Training Faster-RCNN 
