@@ -1,5 +1,5 @@
 # dt-object-detection
-Duckietown Project: Object Detection
+Duckietown Project: Real Time Object Detection with Tracking
 
 This is complete object detection package for real-time object detection on duckietown stack. 
 
