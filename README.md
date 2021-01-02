@@ -6,11 +6,12 @@ This is complete object detection package for real-time object detection on duck
 This package combine deep learning based object detector along with object tracking using Kalman Filter. 
 
 # I see you Duckie!
-![Img 1](./samples/1.png?raw=true)
-![Img 2](./samples/2.png?raw=true)
-![Img 3](./samples/3.png?raw=true)
-![Img 4](./samples/4.png?raw=true)
+![Img 1](./samples/1.png?raw=true =320x)
+![Img 2](./samples/2.png?raw=true =320x)
+![Img 3](./samples/3.png?raw=true =320x)
+![Img 4](./samples/4.png?raw=true =320x)
 
+Here are the online videos to watch: [Simualtor](https://vimeo.com/496162175), [Real-robot](https://vimeo.com/496162169)
 ## Seting-Up the Laptop
 
 Setup your laptop using the documentation available at [duckietown-manual](https://docs.duckietown.org/daffy/opmanual_duckiebot/out/building_duckiebot_c0.html)
