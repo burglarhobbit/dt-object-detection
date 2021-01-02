@@ -6,10 +6,12 @@ This is complete object detection package for real-time object detection on duck
 This package combine deep learning based object detector along with object tracking using Kalman Filter. 
 
 # I see you Duckies!
+<p float="left">
 <img src="./samples/1.png" alt="1" width="320px">
 <img src="./samples/2.png" alt="2" width="320px">
 <img src="./samples/3.png" alt="3" width="320px">
 <img src="./samples/4.png" alt="4" width="320px">
+</p>
 
 
 Here are the online videos to watch: [Simualtor](https://vimeo.com/496162175), [Real-robot](https://vimeo.com/496162169)
