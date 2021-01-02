@@ -185,6 +185,21 @@ class Instances(object):
             ret.set(k, v)
         return ret
 
+
+    # Converts list fields to tensor
+    def toTensor(self):
+        for k, v in self._fields.items():
+            if isinstance(v, list):
+                self._fields[k] = torch.tensor(v)
+
+    def toList(self):
+        for k, v in self._fields.items():
+            if isinstance(v, torch.Tensor):
+                self._fields[k] = v.cpu().numpy()
+            if isinstance(v, Boxes):
+                self._fields[k] = v.tensor.cpu().numpy()
+
+                
     def __getitem__(self, item: Union[int, slice, torch.BoolTensor]) -> "Instances":
         """
         Args:

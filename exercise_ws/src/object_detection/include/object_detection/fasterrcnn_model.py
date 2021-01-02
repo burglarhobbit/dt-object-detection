@@ -5,11 +5,7 @@ import torchvision.transforms as T
 
 from object_detection.faster_rcnn.src.architecture import FasterRCNN
 from object_detection.faster_rcnn.src.config import Cfg as cfg
-
-class NoGPUAvailable(Exception):
-    def __init__(self):
-        print("GPU not available!")
-
+from object_detection.faster_rcnn.src.tracker.track import MultiObjTracker
 
 class Wrapper():
     def __init__(self, checkpoint_path, config_file):
@@ -22,15 +18,13 @@ class Wrapper():
         self.device = torch.device("cuda") if (torch.cuda.is_available() and cfg.USE_CUDA) else torch.device("cpu")
         print("Using the device for training: {} \n".format(self.device))
 
-        if not torch.cuda.is_available():
-            raise NoGPUAvailable()
-
         model = FasterRCNN(cfg)
         model = model.to(self.device)
 
         model.load_state_dict(checkpoint['model_state_dict'], strict=True)
 
         self.model = model.eval()
+        self.tracker = MultiObjTracker(max_age=1)
 
     def predict(self, batch_or_image: list):
         boxes = [] 
@@ -41,6 +35,12 @@ class Wrapper():
             for img in batch_or_image:  # or simply pipe the whole batch to the model instead of using a loop!
                 img = self._image_transform(img)
                 _, instances, _ , _ = self.model(img)
+
+                # instances[0].toList()
+
+                # for instance in instances:
+                #     self.tracker.predict()
+                #     self.tracker.update(instance.pred_boxes)
                 
                 boxes.append(instances[0].pred_boxes)
                 labels.append(instances[0].pred_classes)

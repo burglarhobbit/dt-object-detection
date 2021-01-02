@@ -13,12 +13,15 @@ Setup your laptop using the documentation available at [duckietown-manual](https
 
 ### Downloading weights
 
-You can download the weights from 
+You can download the weights from [drive](https://drive.google.com/drive/folders/11RFmZpG6oJDrcqzBS3_Za5iitlmGdXW3?usp=sharing) and put them in `object_detection/include/object_detection/weights`
+
+### Building and Running
 
     dts exercises build
     dts exercises test -b $robot_name --local
+    dts exercises test --sim
 
-In the package object_detection/config/default.yaml you can specify which architecture to use.
+In the package `object_detection/config/default.yaml` you can specify which architecture to use, and other configuration.
 
 
 ### Training Faster-RCNN 
@@ -26,9 +29,9 @@ In the package object_detection/config/default.yaml you can specify which archit
     cd utils
     python3 train.py -name $exp_name -config config.yaml -mode train
 
-You can use the $config.yaml$ to specify the datset path, weights saving path and other model hyper-parameters. The faster-rcnn code is inspired from the structure of [detectron2](https://github.com/facebookresearch/detectron2)
+You can use the `config.yaml` which you can finf in `./include/object_detection/faster_rcnn/` to specify the datset path, weights saving path and other model hyper-parameters. The faster-rcnn code is inspired from the structure of [detectron2](https://github.com/facebookresearch/detectron2)
 
-## Run inference on the jetson nano
+## Run inference on the jetson nano on Yolov5
 
     sudo apt-get install linux-headers-generic build-essential dkms
     sudo apt-get install libffi-dev build-essential git apt-utils 

@@ -4,10 +4,12 @@ import rospy
 import rospkg
 import yaml
 from PIL import Image as PIL_Image, ImageDraw
+import matplotlib.pyploy as plt
 
 from duckietown.dtros import DTROS, NodeType, TopicType, DTParam, ParamType
 from sensor_msgs.msg import CompressedImage, Image, CameraInfo
 from duckietown_msgs.msg import Twist2DStamped, LanePose, WheelsCmdStamped, BoolStamped, FSMState, StopLineReading, AntiInstagramThresholds, Vector2D
+from visualization_msgs.msg import Marker, MarkerArray
 
 from image_processing.anti_instagram import AntiInstagram
 from image_processing.ground_projection_geometry import Point, GroundProjectionGeometry
@@ -17,7 +19,7 @@ from image_geometry import PinholeCameraModel
 
 import os
 import cv2
-from object_detection.model import Wrapper
+
 from cv_bridge import CvBridge
 
 def load_extrinsics():
@@ -82,6 +84,13 @@ class ObjectDetectionNode(DTROS):
             dt_topic_type=TopicType.PERCEPTION
         )
 
+        self.image_publish = rospy.Publisher(
+            "~object_projection",
+            Image,
+            queue_size=1,
+            dt_topic_type=TopicType.PERCEPTION
+        )
+
         # Construct subscribers
         self.sub_image = rospy.Subscriber(
             "~image/compressed",
@@ -122,7 +131,15 @@ class ObjectDetectionNode(DTROS):
         model_file_absolute = rospack.get_path('object_detection') + model_file
         config_file_absolute = rospack.get_path('object_detection') + config_file
 
-        self.model_wrapper = Wrapper(model_file_absolute, config_file_absolute)
+        model = rospy.get_param('~model','.')
+        if model=="faster-rcnn":
+            from object_detection.fasterrcnn_model import Wrapper
+            self.model_wrapper = Wrapper(model_file_absolute, config_file_absolute)
+        else:
+            from object_detection.yolo_model import Wrapper 
+            self.model_wrapper = Wrapper(model_file_absolute)
+
+
         self.initialized = True
         self.log("Initialized!")
     
@@ -178,6 +195,10 @@ class ObjectDetectionNode(DTROS):
         self.image_publish.publish(self.bridge.cv2_to_imgmsg(img_boxes, encoding="rgb8"))
         
         obj_locs = self.obj_locs(bboxes[0], classes[0]) # [0] because our batch size given to the wrapper is 1
+
+        obj_ground_image = self._draw_projection(obj_locs)
+
+        self.obj_publish.publish(self.bridge.cv2_to_imgmsg(obj_ground_image, encoding="rgb8"))
     
     def obj_locs(self, bboxes, classes):
         obj_det_list = []
@@ -190,10 +211,26 @@ class ObjectDetectionNode(DTROS):
             rect = self.rectifier.rectify_point(pixel)
             rect_pt = Point.from_message(rect)
             ground_pt = self.ground_projector.pixel2ground(rect_pt)
-            
+
             obj_det_list.append(ground_pt)
 
         return obj_det_list
+
+    def _draw_projection(self, objects_list):
+        fig, ax = plt.subplots()
+
+        for pts in objects_list:
+            box_width, box_height = 0.04, 0.04
+            box = patches.Rectangle((pts.y-box_width/2, pts.x), box_width, box_height, linewidth=2, fill=False, edgecolor='r')
+            ax.add_patch(box)
+
+        # ax.axis('image')
+        # ax.axis('auto')
+        ax.set_xlim(-0.4, 0.4)
+        ax.set_ylim(0.0, 3.0)
+        ax.set_aspect('equal')
+
+        return _fig2data(fig)
 
     def _draw_boxes(self, image, bboxes, classes):
         img =  PIL_Image.fromarray(image.copy())
@@ -203,6 +240,24 @@ class ObjectDetectionNode(DTROS):
             draw_obj.rectangle(box, outline=colors[clss])
         
         return np.array(img)
+
+    def _fig2data(fig):
+        """
+        @brief Convert a Matplotlib figure to a 4D numpy array with RGBA channels and return it
+        @param fig a matplotlib figure
+        @return a numpy 3D array of RGBA values
+        """
+        # draw the renderer
+        fig.canvas.draw()
+
+        # Get the RGBA buffer from the figure
+        w,h = fig.canvas.get_width_height()
+        buf = np.fromstring ( fig.canvas.tostring_rgb(), dtype=np.uint8 ).reshape((h,w,3))
+        # buf.shape = ( w, h,4 )
+        #
+        # # canvas.tostring_argb give pixmap in ARGB mode. Roll the ALPHA channel to have it in RGBA mode
+        # buf = numpy.roll ( buf, 3, axis = 2 )
+        return buf
 
 
 if __name__ == "__main__":

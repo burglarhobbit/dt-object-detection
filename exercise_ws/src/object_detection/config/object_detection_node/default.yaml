@@ -1,7 +1,16 @@
 # path to model is by default relative to the package
 
-# model_file: "/include/object_detection/weights/sim.pt"
-# config_file: "/config/object_detection_node/sim_config.yaml"
-model_file: "/include/object_detection/weights/real.pt"
-config_file: "/config/object_detection_node/real_config.yaml"
+
+model: 'faster-rcnn'
+# model_file: "/include/object_detection/weights/sim_fasterrcnn.pt"
+# config_file: "/config/object_detection_node/sim_config.yaml" # doesn't needed for yolo
+model_file: "/include/object_detection/weights/real_fasterrcnn.pt"
+config_file: "/config/object_detection_node/real_config.yaml" # doesn't needed for yolo
+
+# model: yolo
+# model_file: "/include/object_detection/weights/sim_yolo.pt"
+# model_file: "/include/object_detection/weights/real_yolo.pt"
+
+
+
 safe_distance: 0.2

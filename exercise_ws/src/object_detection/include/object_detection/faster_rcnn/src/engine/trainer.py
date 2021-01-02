@@ -14,7 +14,6 @@ from torchvision import transforms as T
 from ..architecture import build_model
 from ..datasets import build_dataset
 from ..eval.evaluator import Evaluator
-from ..tracker import MultiObjTracker
 from ..utils import Instances, Boxes, utils
 
 
